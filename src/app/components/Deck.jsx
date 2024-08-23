@@ -4,13 +4,11 @@ import { useEffect, useState } from "react";
 import cards from "@/data/cards";
 
 export function Deck() {
-  const [count, setCount] = useState(0);
-  const [isPlay, setIsPlay] = useState(false);
-  const [startContainer, setStartConatiner] = useState([]);
-  const [doneContainer, setDoneConatiner] = useState([]);
+  const [startContainer, setStartContainer] = useState([]);
+  const [doneContainer, setDoneContainer] = useState([]);
   const [currentCard, setCurrentCard] = useState(null);
   useEffect(() => {
-    setStartConatiner(cards);
+    setStartContainer(cards);
   }, []);
 
   const pullCard = () => {
@@ -20,8 +18,8 @@ export function Deck() {
       (foo, index) => index !== randomNumber
     );
     setCurrentCard(selectedCard);
-    setDoneConatiner((prev) => [...prev, selectedCard]);
-    setStartConatiner(newContainer);
+    setDoneContainer((prev) => [...prev, selectedCard]);
+    setStartContainer(newContainer);
     containerCounter();
   };
 
@@ -31,40 +29,54 @@ export function Deck() {
     }
   };
 
-  function handleClick() {
-    for (let i = 0; i < cards.length - 1; i++) {
-      if (count === cards.length - 1) {
-        setCount(0);
-      } else {
-        changeCard();
-      }
-    }
-    setIsPlay(!isPlay);
-  }
-
-  function changeCard() {
-    setCount(count + 1);
-    setTimeout(handleClick, 2000);
-  }
 
   return (
-    <div>
-      <div className="cardsContainer">
-        {currentCard && (
+    <div className="main">
+        {!currentCard ? (
+          <Image
+            src={"/themes/mexican-pattern.jpeg"}
+            alt="mexican-pattern"
+            className="startCard"
+            width={309}
+            height={447}
+            priority
+          />
+        ):(
           <Image
             src={"/loteria-cards/" + currentCard.image}
             alt={currentCard.name}
+            className="mainCard"
             width={309}
             height={447}
             priority
           />
         )}
-      </div>
-      <button className="playButton" onClick={pullCard}>
-        Next
-      </button>
-      /*HOMEWORK: - display past cards shown - fix visuals - correct image paths
-      */
+        <div className="historyContainer">
+          {doneContainer
+          .filter((key) => key !== currentCard)
+          .reverse()
+          .map((pastCardObj) => {
+            return (
+            <Image
+              key={pastCardObj.number}
+              src={"/loteria-cards/" + pastCardObj.image}
+              alt={pastCardObj.name}
+              className="pastCard"
+              width={78}
+              height={112}
+              priority
+            />
+            );
+          })
+          }
+        </div>
+        <button className="playButton" onClick={() => setTimeout(pullCard, 1500)}>
+          {!currentCard ? "Start Game":"Next Card"}
+        </button>
+        {/*
+        HOMEWORK:
+        - change alert to something else
+        */}
     </div>
   );
 }
