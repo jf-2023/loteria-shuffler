@@ -31,6 +31,7 @@ body {
 }
 
 .playButton {
+  margin-top: 50px;
   flex: 20%;
   width: 155px;
   max-width: 309px;
@@ -43,7 +44,7 @@ body {
 }
 
 .historyContainer {
-  margin: 20px;
+  margin-bottom: 50px;
   overflow: auto;
   height: 118px;
   width: 354px;
