@@ -1,52 +1,32 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import cards from "@/data/cards";
 
 export function Deck() {
-  const [startContainer, setStartContainer] = useState([]);
+  const [startContainer, setStartContainer] = useState(cards);
   const [doneContainer, setDoneContainer] = useState([]);
   const [currentCard, setCurrentCard] = useState(null);
-  useEffect(() => {
-    setStartContainer(cards);
-  }, []);
-
-  let map = new Map();
-
+  
   const pullCard = () => {
-    const randomNumber = Math.floor(Math.random() * startContainer.length);
+    setTimeout(() => {const randomNumber = Math.floor(Math.random() * startContainer.length);
+    const selectedCard = startContainer[randomNumber];
+    const newContainer = startContainer.filter((card) => card !== selectedCard);
 
-    if (!map.has(randomNumber) && map.size != startContainer.length) {
-      map.set(randomNumber, randomNumber);
-      const selectedCard = startContainer[randomNumber];
-      const newContainer = startContainer.filter(
-        (foo, index) => index !== randomNumber
-      );
-      setCurrentCard(selectedCard);
-      setDoneContainer((prev) => [...prev, selectedCard]);
-      setStartContainer(newContainer);
-      containerCounter();
-      console.log(map.size);
-      console.log(startContainer.length);
-    } else {
-      if (map.size != startContainer.length) {
-        pullCard();
-      }
-    }
-  };
-
-  let nInterId;
+    setCurrentCard(selectedCard);
+    setStartContainer(newContainer);
+    setDoneContainer((prev) => [...prev, selectedCard]);
+    console.log(`NEW container: ${newContainer.length}`);
+    console.log(`START container: ${startContainer.length}`);
+    console.log(`DONE container: ${doneContainer.length}`);
+    containerCounter();
+    pullCard();}, 1000)
+  }     
 
   const containerCounter = () => {
-    if (map.size === 54) {
-      nInterId = null;
-      alert("stopped succesfully");
-    }
-  };
-
-  const changeCard = () => {
-    if (!nInterId) {
-      nInterId = setInterval(pullCard, 500);
+    const deckSize = 54;
+    if (doneContainer === deckSize) {
+      alert("Game is done");
     }
   };
 
@@ -92,8 +72,7 @@ export function Deck() {
 
       <button
         className="playButton"
-        onClick={changeCard}
-        disabled={currentCard}
+        onClick={pullCard}
       >
         Start Game
       </button>
